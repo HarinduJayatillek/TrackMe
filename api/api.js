@@ -27,6 +27,33 @@ app.get('/api/test', (req, res) => {
 
 });
 
+/**
+* @api {get} /api/devices/:deviceId/device-history AllDevices An array of all devices
+* @apiGroup Device
+* @apiSuccessExample {json} Success-Response:
+* [
+*    {
+*       "_id": "dsohsdohsdofhsofhosfhsofh",
+*       "name": "Mary's iPhone",
+*       "user": "mary",
+*       "sensorData": [
+*           {
+*              "ts": "1529542230",
+*              "temp": 12,
+*              "loc": {
+*                  "lat": -37.84674,
+*                  "lon": 145.115113
+*              }
+*          }
+*    }
+*  
+* ]
+* @apiErrorExample {json} Error-Response:
+* {
+*   "Device does not exist"
+* }
+*/
+
 app.get('/api/devices/:deviceId/device-history', (req, res) => {
     const { deviceId } = req.params;
         Device.findOne({"_id": deviceId }, (err, devices) => {
@@ -37,9 +64,27 @@ app.get('/api/devices/:deviceId/device-history', (req, res) => {
     });
 });
 
+/**
+* @api {post} /api/authenticate user login
+* @apiGroup User
+* @apiParam {String} name Name of the user
+* @apiParam {String} password password of the user
+* @apiSuccessExample {json} Success-Response:
+* [
+*    {
+*         success: true,
+*         message: 'Authenticated successfully',
+*         isAdmin: users.isAdmin
+*    }
+* ]
+* @apiErrorExample {json} Error-Response:
+* {
+*   res.send('user does not found');
+* }
+*/
+
 app.post('/api/authenticate', (req, res) => { 
 
-    // console.log(req.body);
     const { username, password } = req.body;
 
     User.findOne({name:username}, (err, users) => {
@@ -74,6 +119,25 @@ app.post('/api/authenticate', (req, res) => {
     });
 
 });
+
+/**
+* @api {post} /api/registration new user registration
+* @apiGroup Registration
+* @apiParam {String} name Name of the user
+* @apiParam {String} password password of the user
+* @apiParam {boolean} isAdmin user is admin
+* @apiSuccessExample {json} Success-Response:
+* [
+*  {
+*       success: true,
+*       message: 'Created new user'
+*  }
+* ]
+* @apiErrorExample {json} Error-Response:
+* {
+*   res.send('User is already exists');
+* }
+*/
 
 app.post('/api/registration', (req, res) => {
     
@@ -119,20 +183,48 @@ app.post('/api/registration', (req, res) => {
 
 });
 
+
 app.post('/api/send-command', (req, res) => {
-    console.log(req.body);
-    const { name, user, sensorData } = req.body;
-    const newDevice = new Device({
-        name,
-        user,
-        sensorData
-    });
-    newDevice.save(err => {
-        return err
-            ? res.send(err)
-            : res.send('successfully added device and data');
-    });
+    // console.log(req.body);
+    // const { name, user, sensorData } = req.body;
+    // const newDevice = new Device({
+    //     name,
+    //     user,
+    //     sensorData
+    // });
+    // newDevice.save(err => {
+    //     return err
+    //         ? res.send(err)
+    //         : res.send('successfully added device and data');
+    // });
 });
+
+/**
+* @api {get} /api/devices/:user/devices get devices of the logged in user
+* @apiGroup Device
+* @apiParam {String} name Name of the logged in user
+* @apiParam {String} user name of the user
+* @apiSuccessExample {json} Success-Response:
+* [
+*  {
+*       "name": "Mary's iPhone",
+*       "user": "mary",
+*       "sensorData": [
+*           {
+*              "ts": "1529542230",
+*              "temp": 12,
+*              "loc": {
+*                  "lat": -37.84674,
+*                  "lon": 145.115113
+*              }
+*          }
+*    }
+* ]
+* @apiErrorExample {json} Error-Response:
+* {
+*   "no devices found for the user"
+* }
+*/
 
 app.get('/api/users/:user/devices', (req, res) => {
         const { user } = req.params;
@@ -148,6 +240,22 @@ app.get('/api/users/:user/devices', (req, res) => {
 });
 
 app.use(express.static(`${__dirname}/public/generated-docs`));
+
+/**
+* @api {get} /docs get generated docs
+* @apiGroup Docs
+* @apiSuccessExample {json} Success-Response:
+* [
+*   {
+*       res.sendFile(`${__dirname}/public/generated-docs/index.html`);
+*   
+*   }
+* ]
+* @apiErrorExample {json} Error-Response:
+* {
+*   "no such a file directory"
+* }
+*/
 
 app.get('/docs', (req, res) => {
     res.sendFile(`${__dirname}/public/generated-docs/index.html`);
@@ -200,6 +308,32 @@ app.get('/api/devices', (req, res) => {
     });
 
 });
+
+/**
+* @api {post} /api/devices get devices of the logged in user
+* @apiGroup Device
+*
+* @apiSuccessExample {json} Success-Response:
+* [
+*  {
+*       "name": "Mary's iPhone",
+*       "user": "mary",
+*       "sensorData": [
+*           {
+*              "ts": "1529542230",
+*              "temp": 12,
+*              "loc": {
+*                  "lat": -37.84674,
+*                  "lon": 145.115113
+*              }
+*          }
+*    }
+* ]
+* @apiErrorExample {json} Error-Response:
+* {
+*   res.send(err)
+* }
+*/
 
 app.post('/api/devices', (req, res) => {
    

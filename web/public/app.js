@@ -2,7 +2,7 @@ $('#navbar').load('navbar.html');
 $('#footer').load('footer.html');  
 
 // const API_URL = 'http://localhost:5000/api';
-const API_URL = 'https://api-tawny-six.vercel.app';
+const API_URL = 'https://api-taupe-five.vercel.app';
 const devices = JSON.parse(localStorage.getItem('devices')) || [];
 
 const currentUser = localStorage.getItem('user');
