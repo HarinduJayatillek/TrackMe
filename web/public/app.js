@@ -1,8 +1,11 @@
 $('#navbar').load('navbar.html');  
 $('#footer').load('footer.html');  
 
-// const API_URL = 'http://localhost:5000/api';
-const API_URL = 'https://api-taupe-five.vercel.app';
+const API_URL = 'http://localhost:5000/api';
+const MQTT_URL = 'http://localhost:5001/send-command';
+
+// const API_URL = 'https://api-taupe-five.vercel.app';
+
 const devices = JSON.parse(localStorage.getItem('devices')) || [];
 
 const currentUser = localStorage.getItem('user');
@@ -44,34 +47,18 @@ if (currentUser) {
             // console.log(response);
             });
         });
-})
-.catch(error => {
+    })
+    .catch(error => {
         console.error(`Error: ${error}`);
     });
-}else {
+}
+else{
     const path = window.location.pathname;
-    
+       
     if (path !== '/login') {
         location.href = '/login';
     }
 }
-
-// $.get(`${API_URL}/devices`)
-// .then(response => {
-//     response.forEach(device => {
-//         // console.log(response);
-//         $('#devices tbody').append(`
-//         <tr>
-//             <td>${device.user}</td>
-//             <td>${device.name}</td>
-//         </tr>`
-//         );
-//     });
-    
-// })
-// .catch(error => {
-//     console.log(`Error: ${error}`);
-// });
 
 $('#add-device').on('click', function() {
     const user = $('#user').val();
@@ -100,7 +87,18 @@ $('#add-device').on('click', function() {
 
 $('#send-command').on('click', function() {
     const command = $('#command').val();
+    const deviceId = $('#deviceID').val();
+
+    console.log(`ID is: ${deviceId}`);
     console.log(`command is: ${command}`);
+
+    $.post(`${MQTT_URL}`, { deviceId, command})
+    .then((response) =>{
+        console.log(response);   
+    });
+
+
+
 });
 
 $('#register').on('click', function(){
@@ -176,7 +174,7 @@ $('#login').on('click', function() {
     const username = $("#user").val();
     const password = $("#password").val();
 
-    // const users = JSON.parse(localStorage.getItem('users')) || [];
+    const users = JSON.parse(localStorage.getItem('users')) || [];
 
     $.post(`${API_URL}/authenticate`, { username, password })
     .then((response) =>{

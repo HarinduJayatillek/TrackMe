@@ -9,7 +9,17 @@ const port = process.env.PORT || 5000;
 const User = require('./models/user');
 const Device = require('./models/device');
 const express = require('express');
+
 const app = express();
+
+app.use(express.static('public'));
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
+
 const bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -184,20 +194,20 @@ app.post('/api/registration', (req, res) => {
 });
 
 
-app.post('/api/send-command', (req, res) => {
-    // console.log(req.body);
-    // const { name, user, sensorData } = req.body;
-    // const newDevice = new Device({
-    //     name,
-    //     user,
-    //     sensorData
-    // });
-    // newDevice.save(err => {
-    //     return err
-    //         ? res.send(err)
-    //         : res.send('successfully added device and data');
-    // });
-});
+// app.post('/api/send-command', (req, res) => {
+//     console.log(req.body);
+//     const { name, user, sensorData } = req.body;
+//     const newDevice = new Device({
+//         name,
+//         user,
+//         sensorData
+//     });
+//     newDevice.save(err => {
+//         return err
+//             ? res.send(err)
+//             : res.send('successfully added device and data');
+//     });
+// });
 
 /**
 * @api {get} /api/devices/:user/devices get devices of the logged in user
